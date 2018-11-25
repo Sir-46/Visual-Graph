@@ -1,0 +1,165 @@
+@charset "utf-8";
+
+html { overflow-y: auto; } /* override common.css */
+
+#viz {
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  padding-top: 5px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.panel {
+  height: 125px; 
+  width: 125px; 
+}
+.panel p {
+  margin-top: 0;
+}
+
+#actions {
+  bottom: 60px;
+  left: 43px;
+  top: 450px;
+}
+#actions p { padding: 10px 10px; cursor: pointer; }
+#actions { color: white; }
+
+.cool-link {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+}
+
+.cool-link::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: width .3s;
+}
+
+.cool-link:hover::after {
+  width: 100%;
+  transition: width .3s;
+}
+
+svg {
+  width : 640px ;
+  height : 360px;
+  border: 2px solid;
+  background-color: white;
+  cursor: default;         
+}
+ 
+svg:not(.active):not(.ctrl) {
+  cursor: crosshair;
+}
+ 
+path.link {
+  fill: none;
+  stroke: black;
+  stroke-width: 3px;
+  cursor: default;
+}
+ 
+svg:not(.active):not(.ctrl) path.link {
+  cursor: pointer;
+}
+ 
+path.link.selected {
+  stroke-dasharray: 10,2;
+  stroke: rgb(255, 138, 39);
+}
+ 
+path.link.dragline {
+  pointer-events: none;
+}
+ 
+path.link.hidden {
+  stroke-width: 0;
+}
+ 
+ 
+circle.node {
+  stroke: black;
+  stroke-width: 2px;
+  cursor: pointer;
+}
+
+text {
+  font-size: 14px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+text.weight {
+  cursor: pointer;
+  font-weight: bold;
+  text-anchor: middle;
+}
+
+text.id {
+  text-anchor: middle;
+  font-weight: bold;
+  float:inherit;
+}
+
+.tableTitle {
+  width: 100%;
+  background-color: #343a40!important;
+  color: #ffffff;
+  font-size: 16px;
+  text-align: center;
+}
+ 
+.graphTable td {
+  font-size: 14px;
+  border: 1px solid;
+  text-align: center;   
+}
+
+.bold { 
+  background-color: rgba(74, 187, 98, 0.5);     
+  font-weight: bold;
+}
+
+.red { 
+  background-color: red;
+  opacity: 0.2;        
+}
+
+.menu a:hover {
+  color:black;
+}
+
+.rignt-menu{
+  top: 51%;
+  left: 72%;
+  position: fixed;
+  background-color: #4285F4;
+  color: white;
+  border: 0;
+  width: 100px;
+  height: 35px;
+}
+
+.panel-active{
+  background-color: white;
+  color: #4285F4;
+  border: 2px solid;
+}
+
+.menu:hover{
+  background-color: #0069d9;
+}
+
+.left-menu-active {
+  background-color:#0069d9; 
+}

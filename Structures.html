@@ -1,0 +1,656 @@
+<!doctype html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link rel="stylesheet" href="Structures/css/viz-1.0.1.css">
+  <link rel="icon" type="icon.png" href="image/icon.png">
+  <title>Structures</title>
+  </head>
+  
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark "><!--nav bar-->
+      <div class="container">
+        <a class="navbar-brand" href="index.html"><img src="image/icon1.png" width="30px" height="30px" style="margin-right:10px">Visual Graphs</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        <div id="navbarNavDropdown" class="navbar-collapse collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link nav-menu menu-active" href="Structures.html">Structures</a>   
+              </li>
+              <li class="nav-item">
+                <a class="nav-link nav-menu" href="Traversal.html">Traversal</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link nav-menu" href="Shortest Paths.html">Shortest Paths</a>
+              </li>
+            </ul>
+        </div>
+      </div>
+    </nav><!--end nav bar-->
+
+    <div id="viz">  
+      <svg></svg>
+    </div>
+
+    <div id="table">
+      <table style="width: 960px; margin-left: auto; margin-right: auto; margin-top: 2px">
+            <tr>
+              <td style="width: 400px;">
+                <div id="adj_matrix" style="float:left; max-height: 220px; max-width: 390px;"><!--matrix table-->
+                  <div class="tableTitle" style="float:left">Adjacency Matrix</div>
+                    <table class="graphTable" id="adj_matrix_table" style="width: 390px;">
+                      <tr></tr>
+                    </table>
+                </div>
+              </td>
+        
+              <td style="width: 400px; ">
+                <div id="adj_list" class="thead-dark" style="float: left; max-height: 220px; max-width: 390px;"><!--list table-->
+                  <div class="tableTitle" style="float:left;">Adjacency List</div>
+                    <table class="graphTable" id="adj_list_table" style="width: 390px;">
+                      <tr></tr>
+                    </table>
+                </div>
+              </td>
+            </tr>
+      </table>
+    </div>
+  
+    <div id="actions" class="panel">
+      <div><p style="background-color:#343a40!important; text-align: center">MENU</p></div>
+      <div class="menu"><p id="menu1" class="left-menu-active" ><span>Undirected</span></p></div>
+      <div class="menu"><p id="menu2" class=""><span>Directed</span></p></div>  
+    </div>
+
+  </body>
+  
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>      
+  <script src="Structures/d3.min.js.download"></script>
+  
+  <script>
+
+    var adjMat_1 = [];
+    var o;
+    Graph(true, o = Math.floor(Math.random() * 3));
+    
+    function menu(menu){//ฟังก์ชัน menu
+      if(menu == menu1){//ถ้า menu == menu1
+        Graph(true,o);
+        var element = document.getElementById("menu2");
+        element.classList.remove("left-menu-active");// remove class
+        var element = document.getElementById("menu1");
+        element.classList.add("left-menu-active");//add class
+      }
+      else{//ถ้า menu == menu1
+        Graph(false,o);
+        var element = document.getElementById("menu1");
+        element.classList.remove("left-menu-active");//remove class
+        var element = document.getElementById("menu2");
+        element.classList.add("left-menu-active");//add class
+      }
+    }
+    
+    function Graph(arg1, arg2) {
+        
+        var UNDIRECTED = arg1,arg2;
+        console.log(arg2);
+        var maxNumberVertex = 10;
+        var grid = 20;
+        var width = 640, height = 360; 
+        var colors = d3.scale.category10();
+
+        d3.select("#viz")
+          .selectAll('svg')
+          .remove();
+        
+        var svg = d3.select('#viz')
+                    .append('svg')
+                    .attr('width', width)
+                    .attr('height', height);
+
+        var countNodeId = new Array(maxNumberVertex);
+
+        for (var i = countNodeId.length; i >= 0; i--) 
+          countNodeId[i] = 0;
+        
+        var nodes = [];
+        var links = [];
+
+        if (arg2 == 0) {
+          nodes = [
+                    {id: 0, x: 280, y: 120},
+                    {id: 1, x: 160, y: 60},
+                    {id: 2, x: 320, y: 210},
+                    {id: 3, x: 480, y: 60},
+                    {id: 4, x: 340, y: 310},
+                  ];
+          links = [
+                    {source: nodes[0], target: nodes[1]},
+                    {source: nodes[0], target: nodes[2]},
+                    {source: nodes[0], target: nodes[3]},
+                    {source: nodes[1], target: nodes[3]},
+                    {source: nodes[1], target: nodes[4]},
+                    {source: nodes[2], target: nodes[4]},
+                    {source: nodes[3], target: nodes[4]}
+                  ];
+        }else if(arg2 == 1){
+          nodes = [
+                    {id: 0, x: 100, y: 100},
+                    {id: 1, x: 210, y: 100},
+                    {id: 2, x: 210, y: 210},
+                    {id: 3, x: 320, y: 100},
+                    {id: 4, x: 430, y: 100},
+                    {id: 5, x: 540, y: 100},
+                    {id: 6, x: 430, y: 210},
+                    {id: 7, x: 540, y: 210}
+                  ];
+          links = [
+                    {source: nodes[0], target: nodes[1]},
+                    {source: nodes[1], target: nodes[3]},
+                    {source: nodes[3], target: nodes[2]},
+                    {source: nodes[2], target: nodes[1]},
+                    {source: nodes[3], target: nodes[4]},
+                    {source: nodes[4], target: nodes[5]},
+                    {source: nodes[5], target: nodes[7]},
+                    {source: nodes[7], target: nodes[6]},
+                    {source: nodes[6], target: nodes[4]}
+                  ];
+        }else if(arg2 == 2){
+          nodes = [
+                    {id: 0, x: 160, y: 130},
+                    {id: 1, x: 480, y: 130},
+                    {id: 2, x: 220, y: 290},
+                    {id: 3, x: 320, y: 50},
+                    {id: 4, x: 420, y: 290}
+                  ];
+
+          links = [
+                    {source: nodes[0], target: nodes[1]},
+                    {source: nodes[1], target: nodes[2]},
+                    {source: nodes[2], target: nodes[3]},
+                    {source: nodes[3], target: nodes[4]},
+                    {source: nodes[4], target: nodes[0]},
+                    {source: nodes[0], target: nodes[3]},
+                    {source: nodes[3], target: nodes[1]},
+                    {source: nodes[1], target: nodes[4]},
+                    {source: nodes[4], target: nodes[2]},
+                    {source: nodes[2], target: nodes[0]}
+                  ];
+        }
+
+        lastNodeId = nodes.length;
+        for (var i = 0; i < nodes.length; i++) 
+          countNodeId[nodes[i].id]++;
+
+  // end of magic
+        svg
+          .append('svg:defs')
+          .append('svg:marker')
+          .attr('id', 'end-arrow')
+          .attr('viewBox', '0 -5 10 10')
+          .attr('refX', 6)
+          .attr('markerWidth', 3)
+          .attr('markerHeight', 3)
+          .attr('orient', 'auto')
+          .append('svg:path')
+          .attr('d', 'M0,-5L10,0L0,5')
+          .attr('fill', '#000');
+    
+        var drag_line = svg.append('svg:path')
+                           .attr('class', 'link dragline hidden')
+                           .attr('d', 'M0,0L0,0');
+
+        var path, circle, weight;
+        var selected_node = null,
+            selected_link = null,
+            mousedown_link = null,
+            mousedown_node = null,
+            mouseup_node = null;
+
+        function resetMouseVars() {
+          mousedown_node = null;
+          mouseup_node = null;
+          mousedown_link = null;
+        }
+
+        function mousedown() {
+          svg.classed('active', true);
+            if (d3.event.ctrlKey || mousedown_node || mousedown_link) 
+              return;
+
+          var point = d3.mouse(this), node = {id: lastNodeId};
+
+          // find new last node ID
+          countNodeId[lastNodeId]++;
+          for (var i = 0; i < maxNumberVertex; i++)
+            if (countNodeId[i] === 0) {
+              lastNodeId = i;
+              break;
+            }
+        
+            node.x = point[0];
+            node.y = point[1];
+            node.x = parseInt(node.x) - parseInt(node.x) % grid;
+            node.y = parseInt(node.y) - parseInt(node.y) % grid;
+            nodes.push(node);
+            restart();
+        }
+
+        function mousemove() {
+          if (!mousedown_node) return;
+          // update drag line
+          drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
+          restart();
+        }
+
+        function mouseup() {
+          if (mousedown_node) drag_line.classed('hidden', true); // hide drag line
+          // because :active only works in WebKit?
+          svg.classed('active', false);
+          // clear mouse event vars
+          resetMouseVars();
+        }
+
+        function spliceLinksForNode(node) {
+          var toSplice = links.filter(function (l) {
+            return (l.source === node || l.target === node);
+          });
+          toSplice.map(function (l) {
+            links.splice(links.indexOf(l), 1);
+          });
+        }
+
+
+  function restart() { // redraw everything
+    
+    svg.selectAll('g')
+       .remove();
+
+    path = svg.append('svg:g')
+              .selectAll('path');
+
+    circle = svg.append('svg:g')
+                .selectAll('g');
+
+    circle = circle.data(nodes, function(d) {
+                                  return d.id;
+                                });
+
+    circle.selectAll('circle').style('fill', function (d) {
+                                                return (d === selected_node) //? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+                                            });
+
+    var g = circle.enter()
+                  .append('svg:g');
+
+    g .append('svg:circle')
+      .attr('class', 'node')
+      .attr('r', 13)
+      .attr('cx', function (d) {
+                    return d.x;
+                  })
+      .attr('cy', function (d) {
+                    return d.y;
+                  })
+      .style('fill', function (d) {
+                        return (d === selected_node) ?  d3.rgb(255, 138, 39) : d3.rgb(255, 255, 255); //d3.rgb(colors(d.id)).brighter().toString() : colors(d.id);
+                      })
+      .on('mousedown', function (d) {
+                          if (d3.event.ctrlKey) return;
+                          mousedown_node = d;
+                          if (mousedown_node === selected_node) selected_node = null;
+                          else selected_node = mousedown_node;
+
+                          selected_link = null;
+
+                          // reposition drag line
+                          drag_line.style('marker-end', 'url(#end-arrow)')
+                                   .classed('hidden', false)
+                                   .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
+                          
+                          restart();
+                        })
+      .on('mouseup', function (d) {
+                        if (!mousedown_node) return;
+                        drag_line.classed('hidden', true)
+                                 .style('marker-end', '');
+
+                        // check for drag-to-self
+                        mouseup_node = d;
+                        if (mouseup_node === mousedown_node) {
+                          resetMouseVars();
+                           return;
+                        }
+
+                        var source, target;
+                        source = mousedown_node;
+                        target = mouseup_node;
+                        var link;
+
+                        if (UNDIRECTED === false) { // ฟังก์ชัน Directed
+                          link = links.filter(function (l) { //เช็กเส้นเชื่อม ถ้า souce เชื่อม target แล้ว
+                                                return (l.source === source && l.target === target); //ไม่ต้อง push path
+                                              })[0];
+                        }else { // ฟังก์ชัน Undirected
+                          link = links.filter( function (l) {
+                                                 return (l.source === source && l.target === target) || (l.source === target && l.target === source);
+                                              })[0];
+                        }
+        
+                        if (!link) {
+                          if (UNDIRECTED === false) { // ฟังก์ชัน Directed
+                            link = {source: source, target: target};
+                            links.push(link);
+                          }else { // ฟังก์ชัน Undirected
+                            link = {source: source, target: target};
+                            links.push(link);
+                          }
+                      }
+        
+                      // select new link
+                      selected_link = link;
+                      selected_node = null;
+                      restart();
+                    });
+
+    g .append('svg:text')
+      .attr('x', function (d) {
+                    return d.x;
+                })
+      .attr('y', function (d) {
+                  return d.y + 16 / 3;
+                })
+      .attr('class', 'id')
+      .text(function (d) {
+              return d.id;
+            });
+
+    // drawing paths
+    path = path.data(links);
+
+    path.classed('selected', function (d) {
+                                return d === selected_link;
+                            });
+
+    path.enter().append('svg:path')
+        .attr('class', 'link')
+        .classed('selected', function (d) {
+                               return d === selected_link;
+                            })
+      .style('marker-end', function (d) { //select undirected menu
+                              if (UNDIRECTED === false) return 'url(#end-arrow)';//remove class marker-end
+                          })
+      .attr('d', function (d) {
+        var deltaX = d.target.x - d.source.x,
+                    deltaY = d.target.y - d.source.y,
+                    dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+                    normX = deltaX / dist,
+                    normY = deltaY / dist,
+
+                    sourcePadding = 12;
+                    targetPadding = 17;
+        
+                    if (UNDIRECTED === true) targetPadding = 12;
+        
+                    sourceX = d.source.x + (sourcePadding * normX);
+                    sourceY = d.source.y + (sourcePadding * normY);
+                    targetX = d.target.x - (targetPadding * normX);
+                    targetY = d.target.y - (targetPadding * normY);
+
+                    if (UNDIRECTED === true)
+                      return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY ;
+                  
+
+                    // check if needs to draw curve or not ?
+                    var link;
+                    link = links.filter(function (l) {
+                                          return (l.source === d.target && l.target === d.source);
+                                        })[0];
+
+                    if (link) { // need arrow
+                      var type;
+                      if (d.source.id < d.target.id){
+                        type = 1;
+                      }else{
+                        type = 2;
+                      }  
+            
+                      // change final point of arrow
+                      var finalX = arrowXY(sourceX, sourceY, targetX, targetY, type).x;
+                      var finalY = arrowXY(sourceX, sourceY, targetX, targetY, type).y;
+                      
+                      var beginX = arrowXY(targetX, targetY, sourceX, sourceY, type).x;
+                      var beginY = arrowXY(targetX, targetY, sourceX, sourceY, type).y;
+                      return 'M' + beginX + ',' + beginY + 'L' + finalX + ',' + finalY;
+                    }else // no need
+                      return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+                      // end check */
+                  })
+        .on('mousedown', function(d) {
+                          if (d3.event.ctrlKey) return;
+
+                          // select link
+                          mousedown_link = d;
+                          if(mousedown_link === selected_link) 
+                            selected_link = null;
+                          else 
+                            selected_link = mousedown_link;
+                          
+                          selected_node = null;
+                          restart();
+                    })
+      .on('mousedown', function(d) {
+                          if (d3.event.ctrlKey) return;
+
+                          // select link
+                          mousedown_link = d;
+                          if (mousedown_link === selected_link) 
+                            selected_link = null;
+                          else 
+                            selected_link = mousedown_link;
+                          selected_node = null;
+                          
+                          restart();
+                      });
+      
+      
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //adj_List
+    var maxNodeId = -1;
+    var adjMat = [];
+    for ( i = 0; i < nodes.length; i++){  //วนรอปหาโหนดสุดท้าย
+        maxNodeId = nodes[i].id;  
+    }    
+    maxNodeId++;
+
+    // adj_matrix
+    for (var i = 0; i < maxNodeId; i++) { //สร้าง matrix
+      adjMat[i] = [];
+      for (var j = 0; j < maxNodeId; j++)
+          adjMat[i][j] = 0;
+    }   
+    
+    if (UNDIRECTED === true) { //ใส่ค่าลงใน matrix แบบไม่มีทิศทาง
+      for (var i = 0; i < links.length; i++) {
+          adjMat[links[i].source.id][links[i].target.id] = 1;
+          adjMat[links[i].target.id][links[i].source.id] = 1;
+        }      
+    }
+    else { //ใส่ค่าลงใน matrix แบบไม่มีทิศทาง
+        for (var i = 0; i < links.length; i++) {
+          adjMat[links[i].source.id][links[i].target.id] = 1;
+        }
+      }
+
+    adjMat_1 = adjMat;
+    console.log(links);
+    console.log(adjMat);
+    console.log(maxNodeId);
+
+    // output adjMat to table
+    d3.select("#adj_matrix_table").selectAll('tr').remove();
+    var table1 = d3.select("#adj_matrix_table").select('tbody');
+    var row = table1.append('tr').attr('class', 'bold');
+    if(maxNodeId != 0){
+      row.append('td').text("i / j").attr('class', 'bold');
+      for (var i = 0; i < maxNodeId; i++) { //first row
+        row.append('td').text(i.toString()).attr('class', 'bold');
+      }
+      
+      for (var i = 0; i < maxNodeId; i++) {
+        row = table1.append('tr');
+        row.append('td').text(i.toString()).attr('class', 'bold');
+        for (var j = 0; j < maxNodeId; j++) {
+          if (adjMat[i][j] == "0") 
+            row.append('td').text(adjMat[i][j]).attr('class', 'red');
+          else 
+            row.append('td').text(adjMat[i][j]);
+        }
+      }
+    }
+
+    // output adjList to table
+    d3.select("#adj_list_table").selectAll('tr').remove();
+    var table2 = d3.select("#adj_list_table").select('tbody');
+    for (var i = 0; i < maxNodeId; i++) {
+      row = table2.append('tr');
+      row.append('td').text(i.toString()).attr('class', 'bold');
+        for (var j = 0; j < maxNodeId; j++)
+          if (adjMat[i][j] == "1")
+            row.append('td').text(j);
+    }
+
+    console.log(adjMat_1);
+  }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      var lastKeyDown = -1;
+      var drag = d3.behavior.drag().on("drag", function (d) {
+        var dragTarget = d3.select(this).select('circle');
+        var new_cx, new_cy;
+
+        dragTarget.attr("cx", function () {
+          new_cx = d3.mouse($("svg")[0])[0];
+          return new_cx;
+        })
+        .attr("cy", function () {
+          new_cy = d3.mouse($("svg")[0])[1];
+          return new_cy;
+        });
+
+        d.x = new_cx;
+        d.y = new_cy;
+        d.x = parseInt(d.x) - parseInt(d.x) % grid;
+        d.y = parseInt(d.y) - parseInt(d.y) % grid;
+        restart();
+      });   
+
+      function keydown() {
+        switch (d3.event.keyCode) {
+          case 46: // delete
+            if (selected_node) {
+              nodes.splice(nodes.indexOf(selected_node), 1);
+              spliceLinksForNode(selected_node);
+              countNodeId[selected_node.id] = 0;     
+              for (var i = 0; i < maxNumberVertex; i++)
+                if (countNodeId[i] === 0) {
+                  lastNodeId = i;
+                  break;
+                }
+              }
+            else if (selected_link)
+              links.splice(links.indexOf(selected_link), 1);
+              selected_link = null;
+              selected_node = null;
+              restart();
+              break; 
+      }
+    }
+
+
+      function keyup() {
+        lastKeyDown = -1;
+        if (d3.event.keyCode === 17) { // ctrl
+          circle.on('mousedown.drag', null)
+                .on('touchstart.drag', null);
+          svg.classed('ctrl', false);
+        }
+      }
+
+      svg.on('mousedown', mousedown)
+         .on('mousemove', mousemove)
+         .on('mouseup', mouseup);
+      d3.select(window)
+        .on('keydown', keydown)
+        .on('keyup', keyup);
+      restart();
+
+
+
+      $("#menu1").click(function(){
+        //restart();
+        menu(menu1);
+        console.log('menu1');
+      });
+
+      $("#menu2").click(function(){
+        //restart();
+        menu(menu2);
+        console.log('menu2');
+      });
+
+      }
+
+
+    function arrowXY(x1, y1, x2, y2, t) {
+      var dist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+      if (x1 === x2) {
+        if (t === 1) return {x: x2 - 4, y: y2};
+        else return {x: x2 + 4, y: y2};
+      }
+
+      if (y1 === y2) {
+        if (t === 1) return {x: x2, y: y2 - 4};
+        else return {x: x2, y: y2 + 4};
+      }
+
+      var m1 = (y2 - y1) / (x2 - x1);
+      var c1 = y1 - m1 * x1;
+      var m2 = -1 / m1;
+      var c2 = y2 - m2 * x2;
+      var d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+      var v = 4;
+      d = d * d + v * v;
+      var D = d;
+      var z1 = c2 - y1;
+
+      var a = 1 + m2 * m2;
+      var b = 2 * m2 * z1 - 2 * x1;
+      var c = x1 * x1 + z1 * z1 - D;
+
+      var delta = b * b - 4 * a * c;
+
+      delta = Math.sqrt(delta);
+
+      var x_1 = (-b + delta) / (2 * a);
+      var y_1 = m2 * x_1 + c2;
+
+      var x_2 = (-b - delta) / (2 * a);
+      var y_2 = m2 * x_2 + c2;
+
+      if (t === 2) return {x: x_1, y: y_1};
+      else return {x: x_2, y: y_2};
+    }
+  </script>
+
+</html>

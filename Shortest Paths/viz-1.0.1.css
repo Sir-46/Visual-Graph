@@ -1,0 +1,164 @@
+@charset "utf-8";
+
+html { overflow-y: auto; } /* override common.css */
+
+#weight{
+  font-size: 16px;
+}
+
+#viz {
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  padding-top: 5px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.panel {
+  position: fixed;
+  color: white;
+  width: 0px;
+  overflow: hidden;
+  background: #777;
+  white-space: nowrap;
+  height: 84px; 
+  width: 125px; 
+  font-size: 11pt;
+  background-color: #007bff; 
+  font-size: 11pt;
+}
+
+#actions {
+  bottom: 60px;
+  left: 43px;
+  top: 450px;
+}
+#actions p { padding: 10px 10px; cursor: pointer; }
+#actions { color: white; }
+#actions p:hover { color: white; }
+#actions p:first-of-type { padding-top: 10px; }
+#actions p:last-of-type { padding-bottom: 10px; }
+#actions-hide {
+  bottom: 60px;
+  left: 0px;
+  padding-left: 14px;
+  padding-right: 15px;
+}
+
+.cool-link {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+}
+
+.cool-link::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: width .3s;
+}
+
+.cool-link:hover::after {
+  width: 100%;
+  transition: width .3s;
+}
+
+svg {
+  border: 2px solid;
+  background-color: white;
+  cursor: default;
+}
+
+svg:not(.active):not(.ctrl) {
+  cursor: crosshair;
+}
+ 
+path.link {
+  fill: none;
+  stroke: black;
+  stroke-width: 3px;
+  cursor: default;
+}
+ 
+svg:not(.active):not(.ctrl) path.link {
+  cursor: pointer;
+}
+ 
+path.link.selected {
+  stroke-dasharray: 10,2;
+  stroke: rgb(255, 138, 39);
+}
+ 
+path.link.dragline {
+  pointer-events: none;
+}
+ 
+path.link.hidden {
+  stroke-width: 0;
+}
+ 
+ 
+circle.node {
+  stroke: rgb(0, 0, 0);
+  stroke-width: 2px;
+  cursor: pointer;
+}
+
+text.weightd{
+  stroke-width: 3px;
+}
+
+text {
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.weight {
+  cursor: pointer;
+  font-weight: bold;
+  fill: red;
+}
+
+text.id {
+  text-anchor: middle;
+  font-weight: bold;
+  float:inherit;
+}
+
+.tableTitle {
+  width: 100%;
+  background-color: #343a40!important;
+  color: #ffffff;
+  font-size: 16px;
+  text-align: center;
+}
+
+.graphTable {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.graphTable td {
+  font-size: 14px;
+  border: 1px solid;
+  text-align: center;
+}
+
+.graphTable tr:hover {
+  background-color: #ffffff;
+}
+
+.bold { 
+  background-color: rgba(74, 187, 98, 0.5);   
+  font-weight: bold;
+}
+
+.demo {
+  font-size: 20px;
+}
